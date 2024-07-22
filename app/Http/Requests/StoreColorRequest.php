@@ -11,7 +11,8 @@ class StoreColorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return  auth()->user()->hasPermissionTo('create colors');
+
     }
 
     /**
@@ -22,7 +23,17 @@ class StoreColorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|unique:colors,name',
+            'code'=>'required|string',
+            'status'=>'required'
         ];
+    }
+
+    public function prepareForvalidation(){
+
+        if(isset($this->input(['status'])['label'])){
+            $this->merge(['status'=>$this->input(['status'])['label']]);
+        };
+
     }
 }

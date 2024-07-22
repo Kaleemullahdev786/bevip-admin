@@ -109,10 +109,10 @@ class CarComparisonController extends Controller
     public function block($id)
     {
         $car_comparison = CarComparison::find($id);
-        if($car_comparison->status == 'blocked'){
+        if($car_comparison->status == 'inactive'){
             $car_comparison->status = 'active';
         }else{
-        $car_comparison->status = 'blocked';
+        $car_comparison->status = 'inactive';
         }
         $car_comparison->save();
 

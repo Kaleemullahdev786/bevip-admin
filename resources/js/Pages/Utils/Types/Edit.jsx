@@ -8,8 +8,10 @@ import SubmitButton from "@/Components/SubmitButton";
 import SelectField from "@/Components/SelectField";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import Statuses from "@/Components/Statuses";
+import TextFile from "@/Components/TextFile";
 
-export default function Edit({ yachtSize }) {
+export default function Edit({ type }) {
     const { errors } = usePage().props;
     const {
         handleSubmit,
@@ -19,32 +21,40 @@ export default function Edit({ yachtSize }) {
     } = useForm();
     const onSubmit = (data) => {
         console.log(data);
-        router.post(`/dashboard/yachtsize/update/${yachtSize.id}`, data);
+        router.post(`/dashboard/types/update/${type.id}`, data);
     };
 
-    const yachtTypes = [
-        { value: "Ft", label: "Ft" },
-        { value: "M", label: "M" },
-    ];
 
-    console.log(yachtTypes);
 
     useEffect(() => {
         if (errors && errors.success) {
             //reset form //
             toast.success(errors.success);
         }
+
+        else if (errors && errors.name) {
+            //reset form //
+            toast.success(errors.name);
+        }
+        else if (errors && errors.status) {
+            //reset form //
+            toast.success(errors.status);
+        }
+        else if (errors && errors["icon"]) {
+            toast.error(errors["icon"]);
+        }
+
     }, [errors]);
 
     return (
         <DashboardLayout>
-            <TopMenu title={"Update Yacht Size"} />
+            <TopMenu title={"Update Type"} />
             <div className="flex justify-center mt-5">
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <Controller
-                            defaultValue={yachtSize.size}
-                            name="size"
+                    <Controller
+                            name="name"
+                            defaultValue={type.name}
                             control={control}
                             rules={{
                                 required: true,
@@ -54,22 +64,70 @@ export default function Edit({ yachtSize }) {
                             )}
                         />
 
-                        <Controller
+                    <Controller
                             name="type"
-                            defaultValue={yachtSize.sizein}
+                            defaultValue={type.type}
                             control={control}
-                            rules={{ required: true }}
+                            rules={{
+                                required: true,
+                            }}
                             render={({ field }) => (
-                                <SelectField
-                                    {...field}
-                                    control={control}
-                                    options={yachtTypes}
-                                />
+                                <TextField {...field} control={control} />
                             )}
                         />
 
+                    <Controller
+                            name="seats"
+                            defaultValue={type.seats}
+                            control={control}
+                            rules={{
+                                required: true,
+                            }}
+                            render={({ field }) => (
+                                <TextField {...field} control={control} />
+                            )}
+                        />
+                        <Controller
+                            name="doors"
+                            defaultValue={type.doors}
+                            control={control}
+                            rules={{
+                                required: true,
+                            }}
+                            render={({ field }) => (
+                                <TextField {...field} control={control} />
+                            )}
+                        />
+                        <Controller
+                            name="icon"
+                            control={control}
+                            rules={{
+                                required: false,
+                            }}
+                            render={({ field }) => (
+                                <TextFile {...field} control={control} />
+                            )}
+                        />
+
+
+                       <Controller
+                         defaultValue={type.status.slice(0,1).toUpperCase()+ type.status.slice(1)}
+                       name="status"
+                       control={control}
+                       rules={{
+                           required: true,
+                       }}
+                       render={({ field }) => (
+                           <SelectField
+                               {...field}
+                               control={control}
+                               options={Statuses}
+                           />
+                       )}
+                   />
+
                         <SubmitButton
-                            label="Update Yacht Size"
+                            label="Update Type"
                             isSubmitting={isSubmitting}
                         />
                     </form>

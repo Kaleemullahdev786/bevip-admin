@@ -8,8 +8,10 @@ import SubmitButton from "@/Components/SubmitButton";
 import SelectField from "@/Components/SelectField";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import Statuses from "@/Components/Statuses";
+import TextFile from "@/Components/TextFile";
 
-export default function Edit({ yachtSize }) {
+export default function Edit({ manufacturer }) {
     const { errors } = usePage().props;
     const {
         handleSubmit,
@@ -19,32 +21,40 @@ export default function Edit({ yachtSize }) {
     } = useForm();
     const onSubmit = (data) => {
         console.log(data);
-        router.post(`/dashboard/yachtsize/update/${yachtSize.id}`, data);
+        router.post(`/dashboard/manufacturers/update/${manufacturer.id}`, data);
     };
 
-    const yachtTypes = [
-        { value: "Ft", label: "Ft" },
-        { value: "M", label: "M" },
-    ];
 
-    console.log(yachtTypes);
 
     useEffect(() => {
         if (errors && errors.success) {
             //reset form //
             toast.success(errors.success);
         }
+
+        else if (errors && errors.name) {
+            //reset form //
+            toast.success(errors.name);
+        }
+        else if (errors && errors.status) {
+            //reset form //
+            toast.success(errors.status);
+        }
+        else if (errors && errors["picture.0"]) {
+            toast.error(errors["picture.0"]);
+        }
+
     }, [errors]);
 
     return (
         <DashboardLayout>
-            <TopMenu title={"Update Yacht Size"} />
+            <TopMenu title={"Update Manufacturer"} />
             <div className="flex justify-center mt-5">
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <Controller
-                            defaultValue={yachtSize.size}
-                            name="size"
+                    <Controller
+                            name="name"
+                            defaultValue={manufacturer.name}
                             control={control}
                             rules={{
                                 required: true,
@@ -55,21 +65,34 @@ export default function Edit({ yachtSize }) {
                         />
 
                         <Controller
-                            name="type"
-                            defaultValue={yachtSize.sizein}
+                            name="picture"
                             control={control}
-                            rules={{ required: true }}
+                            rules={{
+                                required: false,
+                            }}
                             render={({ field }) => (
-                                <SelectField
-                                    {...field}
-                                    control={control}
-                                    options={yachtTypes}
-                                />
+                                <TextFile {...field} control={control} />
                             )}
                         />
 
+                       <Controller
+                      defaultValue={manufacturer.status}
+                       name="status"
+                       control={control}
+                       rules={{
+                           required: true,
+                       }}
+                       render={({ field }) => (
+                           <SelectField
+                               {...field}
+                               control={control}
+                               options={Statuses}
+                           />
+                       )}
+                   />
+
                         <SubmitButton
-                            label="Update Yacht Size"
+                            label="Update Manufacturer"
                             isSubmitting={isSubmitting}
                         />
                     </form>

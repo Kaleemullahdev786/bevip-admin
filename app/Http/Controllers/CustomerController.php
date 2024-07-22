@@ -123,15 +123,25 @@ class CustomerController extends Controller
     public function block($id)
     {
         $customer = Customer::find($id);
-        if($customer->status == 'blocked'){
+        if($customer->status == 'inactive'){
             $customer->status = 'active';
         }else{
-        $customer->status = 'blocked';
+        $customer->status = 'inactive';
         }
         $customer->save();
 
 
-        return redirect()->route('packages')->withErrors(['success' => 'Customer status updated successfully']);
+        return redirect()->route('customers')->withErrors(['success' => 'Customer status updated successfully']);
+    }
+
+    public function restored($id)
+    {
+
+        $record = Customer::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('customers')->withErrors(['success' => 'customer restored successfully']);
     }
 
 }

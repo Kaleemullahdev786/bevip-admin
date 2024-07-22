@@ -2,16 +2,18 @@
 
 namespace App\Http\Requests;
 
+use App\ValidationData;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateManufacturerRequest extends FormRequest
 {
+    use ValidationData;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->user()->hasPermissionTo('update manufacturers');;
     }
 
     /**
@@ -22,7 +24,16 @@ class UpdateManufacturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|unique:manufacturers,name,'.$this->manufacturer->id,
+            'picture'=>'nullable|array',
+            'picture.*'=>'file|mimes:png,jpg',
+            'status'=>'required'
         ];
+    }
+    public function prepareForvalidation(){
+
+        $this->merge(['status'=>$this->getValues('status')]);
+
+
     }
 }

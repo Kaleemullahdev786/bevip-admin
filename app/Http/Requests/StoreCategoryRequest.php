@@ -11,7 +11,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->user()->hasPermissionTo('create categories');
     }
 
     /**
@@ -22,7 +22,20 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required',
+            'note'=>'nullable|string',
+            'description'=>'nullable|string',
+            'icon'=>'required|required',
+            'icon.*'=>'file|mimes:png,jpg',
+            'status'=>'required'
         ];
+    }
+
+    public function prepareForvalidation(){
+
+        if(isset($this->input(['status'])['label'])){
+            $this->merge(['status'=>$this->input(['status'])['label']]);
+        };
+
     }
 }

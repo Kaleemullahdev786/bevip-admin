@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Services\CommonClass;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    public $common;
+
+
+    public function __construct(CommonClass $common)
+    {
+        $this->common = $common;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -41,6 +49,9 @@ class CategoryController extends Controller
     {
 
         $data = $request->validated();
+        $image = $this->common->upload($data['icon'][0],'categories');
+        $data['image'] = $image[0];
+
         Category::create($data);
         return to_route('categories')->withErrors('success','Category created successfully');
 
@@ -73,11 +84,12 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('update categories');
-        if(!$hasPermission){
-            abort(403);
-        }
         $data = $request->validated();
+        if(isset($data['icon'])){
+            $image = $this->common->upload($data['icon'][0],'features');
+                $data['image'] = $image[0];
+                $this->common->deleteImageFromDir($feature->image,'features');
+            }
         $category->update($data);
         return to_route('categories')->withErrors('success','Category updated successfully');
 
@@ -92,28 +104,26 @@ class CategoryController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete(Category $category)
     {
         $hasPermission = auth()->user()->hasPermissionTo('delete categories');
         if(!$hasPermission){
             abort(403);
         }
-        $category = Category::find($id);
+        $this->common->deleteImageFromDir($category->image,'categories');
         $category->delete();
-
-
         return redirect()->route('categories')->withErrors(['success' => 'Category deleted successfully']);
     }
 
 
 
-    public function block($id)
+    public function block(Category $category)
     {
-        $category = Category::find($id);
-        if($category->status == 'blocked'){
+
+        if($category->status == 'inactive'){
             $category->status = 'active';
         }else{
-        $category->status = 'blocked';
+        $category->status = 'inactive';
         }
         $category->save();
 
@@ -121,4 +131,13 @@ class CategoryController extends Controller
         return redirect()->route('categories')->withErrors(['success' => 'Category status updated successfully']);
     }
 
+    public function restored($id)
+    {
+
+        $record = Category::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('categories')->withErrors(['success' => 'Category restored successfully']);
+    }
 }

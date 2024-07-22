@@ -28,9 +28,24 @@ export default function TextField({ name, control, rules }) {
                         ? "password"
                         : field.name === "email"
                         ? "email"
+                        : field.name === "lic exp date" || field.name === "reg exp date"
+                        ? "date"
+
+
+                        : field.name === "code"
+                        ? "color"
                         : field.name === "phone" ||
                           field.name === "mobile" ||
-                          field.name === "price"
+                          field.name === "price" ||
+                          field.name === "seats" ||
+                          field.name === "doors" ||
+                          field.name === "year" ||
+                          field.name === "horse power"||
+                          field.name === "deposit fee"||
+                          field.name === "extra charges"||
+                          field.name === "luggage"||
+                          field.name === "discount"
+
                         ? "number"
                         : "text"
                 }

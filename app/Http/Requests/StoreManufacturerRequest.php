@@ -11,7 +11,7 @@ class StoreManufacturerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->user()->hasPermissionTo('create manufacturers');;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreManufacturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|unique:manufacturers,name',
+            'picture'=>'required|array',
+            'picture.*'=>'file|mimes:png,jpg',
+            'status'=>'required'
         ];
+    }
+    public function prepareForvalidation(){
+
+        if(isset($this->input(['status'])['label'])){
+            $this->merge(['status'=>$this->input(['status'])['label']]);
+        };
+
     }
 }

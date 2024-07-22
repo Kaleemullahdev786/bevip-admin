@@ -18,10 +18,12 @@ class ColorController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $colors = Color::get();
+
+        $colors = Color::all();
         return Inertia::render('Utils/Colors/index', ['colors' => $colors]);
     }
- /**
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -38,17 +40,9 @@ class ColorController extends Controller
      */
     public function store(StoreColorRequest $request)
     {
-
-        $data = $request->validated();
-        Color::create($data);
-        return to_route('colors')->withErrors('success','Color created successfully');
-
-
-
+        Color::create($request->validated());
+        return to_route('colors')->withErrors(['success'=>'Color created successfully']);
     }
-
-
-
 
     /**
      * Display the specified resource.
@@ -71,53 +65,50 @@ class ColorController extends Controller
      */
     public function update(UpdateColorRequest $request, Color $color)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('update colors');
-        if(!$hasPermission){
-            abort(403);
-        }
-        $data = $request->validated();
-        $color->update($data);
-        return to_route('colors')->withErrors('success','Color updated successfully');
+        $color->update($request->validated());
+        return to_route('colors')->withErrors(['success'=>'Color updated successfully']);
 
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from database.
      */
-    public function destroy(Color $color)
-    {
-        //
-    }
-
-
-    public function delete($id)
+    public function delete(Color $color)
     {
         $hasPermission = auth()->user()->hasPermissionTo('delete colors');
         if(!$hasPermission){
             abort(403);
         }
-        $color = Color::find($id);
-
         $color->delete();
-
-
         return redirect()->route('colors')->withErrors(['success' => 'Color deleted successfully']);
     }
 
+    /**
+     * Change Status the specified resource.
+     * @param $color id
+     */
 
-
-    public function block($id)
+    public function block(Color $color)
     {
-        $color = Color::find($id);
-        if($color->status == 'blocked'){
+
+        if($color->status == 'inactive'){
             $color->status = 'active';
         }else{
-        $color->status = 'blocked';
+        $color->status = 'inactive';
         }
         $color->save();
 
-
         return redirect()->route('colors')->withErrors(['success' => 'Color status updated successfully']);
+    }
+
+    public function restored($id)
+    {
+
+        $record = Color::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('colors')->withErrors(['success' => 'Color restored successfully']);
     }
 
 }
