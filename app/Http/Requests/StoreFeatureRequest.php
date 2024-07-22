@@ -11,7 +11,7 @@ class StoreFeatureRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->user()->hasPermissionTo('create features');;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreFeatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|unique:features,name',
+            'icon'=>'required|required',
+            'icon.*'=>'file|mimes:png,jpg',
+            'status'=>'required'
         ];
+    }
+    public function prepareForvalidation(){
+
+        if(isset($this->input(['status'])['label'])){
+            $this->merge(['status'=>$this->input(['status'])['label']]);
+        };
+
     }
 }

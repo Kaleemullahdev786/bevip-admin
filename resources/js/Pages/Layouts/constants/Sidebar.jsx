@@ -23,13 +23,13 @@ export default function Sidebar() {
             isActive: false,
             isDropdown: true,
             dropdownItems: [
-                {name:'Vehicles', href:"/dashboard/users"},
-                {name:'Categories', href:"/dashboard/users"},
-                {name:'Types', href:"/dashboard/users"},
-                {name:'Manufacturers', href:"/dashboard/users"},
-                {name:'Models', href:"/dashboard/users"},
-                {name:'Features', href:"/dashboard/users"},
-                {name:'Colors', href:"/dashboard/users"}
+                {name:'Vehicles', href:"/dashboard/vehicles"},
+                {name:'Categories', href:"/dashboard/categories"},
+                {name:'Types', href:"/dashboard/types"},
+                {name:'Manufacturers', href:"/dashboard/manufacturers"},
+                {name:'Models', href:"/dashboard/brand_models"},
+                {name:'Features', href:"/dashboard/features"},
+                {name:'Colors', href:"/dashboard/colors"}
 
             ],
         },

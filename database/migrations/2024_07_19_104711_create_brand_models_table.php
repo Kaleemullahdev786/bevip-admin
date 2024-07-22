@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('brand_models', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('manufacturer_id');
+            $table->foreign('manufacturer_id')->references('id')->on('manufacturers');
+            $table->string('status')->default('active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

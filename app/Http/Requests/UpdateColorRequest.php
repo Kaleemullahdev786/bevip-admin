@@ -11,7 +11,7 @@ class UpdateColorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return  auth()->user()->hasPermissionTo('update colors');
     }
 
     /**
@@ -22,7 +22,17 @@ class UpdateColorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|unique:colors,name,'.$this->color->id,
+            'code'=>'required|string',
+            'status'=>'required'
         ];
+    }
+
+    public function prepareForvalidation(){
+
+        if(isset($this->input(['status'])['label'])){
+            $this->merge(['status'=>$this->input(['status'])['label']]);
+        };
+
     }
 }

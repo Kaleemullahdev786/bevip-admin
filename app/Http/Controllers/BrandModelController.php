@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BrandModel;
 use App\Http\Requests\StoreBrandModelRequest;
 use App\Http\Requests\UpdateBrandModelRequest;
+use App\Models\Manufacturer;
 use Inertia\Inertia;
 
 class BrandModelController extends Controller
@@ -14,11 +15,12 @@ class BrandModelController extends Controller
      */
     public function index()
     {
-        $hasPermission = auth()->user()->hasPermissionTo('view brandmodels');
+        $hasPermission = auth()->user()->hasPermissionTo('view brand_models');
         if(!$hasPermission){
             abort(403);
         }
-        $brand_models = BrandModel::where('status', 'active')->get();
+        $brand_models = BrandModel::with('manufacturer')->get();
+        // dd($brand_models);
         return Inertia::render('Utils/BrandModels/index', ['brand_models' => $brand_models]);
     }
 
@@ -31,8 +33,8 @@ class BrandModelController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $perks = BrandModel::select('name as label', 'name as value')->get()->toArray();
-        return Inertia::render('Utils/Packages/Create', ['perks' => $perks]);
+        $manufactuers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
+        return Inertia::render('Utils/BrandModels/Create', ['manufactuers' => $manufactuers]);
     }
 
     /**
@@ -64,8 +66,9 @@ class BrandModelController extends Controller
      */
     public function edit(BrandModel $brand_model)
     {
-
-        return Inertia::render('Utils/BrandModels/Edit', ['brand_model' => $brand_model]);
+        $brand_model->load('manufacturer');
+        $manufactuers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
+        return Inertia::render('Utils/BrandModels/Edit', ['brand_model' => $brand_model,'manufactuers'=>$manufactuers]);
     }
 
     /**
@@ -79,7 +82,7 @@ class BrandModelController extends Controller
         }
         $data = $request->validated();
         $brand_model->update($data);
-        return to_route('brand_models')->withErrors('success','Model updated successfully');
+        return to_route('brand_models')->withErrors(['success'=>'Model updated successfully']);
 
     }
 
@@ -92,14 +95,14 @@ class BrandModelController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete(BrandModel $brand_model)
     {
         $hasPermission = auth()->user()->hasPermissionTo('delete brand_models');
         if(!$hasPermission){
             abort(403);
         }
-        $package = BrandModel::find($id);
-        $package->delete();
+
+        $brand_model->delete();
 
 
         return redirect()->route('brand_models')->withErrors(['success' => 'Model deleted successfully']);
@@ -107,13 +110,13 @@ class BrandModelController extends Controller
 
 
 
-    public function block($id)
+    public function block(BrandModel $brand_model)
     {
-        $brand_model = BrandModel::find($id);
-        if($brand_model->status == 'blocked'){
+
+        if($brand_model->status == 'inactive'){
             $brand_model->status = 'active';
         }else{
-        $brand_model->status = 'blocked';
+        $brand_model->status = 'inactive';
         }
         $brand_model->save();
 
@@ -121,4 +124,13 @@ class BrandModelController extends Controller
         return redirect()->route('brand_models')->withErrors(['success' => 'Model status updated successfully']);
     }
 
+    public function restored($id)
+    {
+
+        $record = BrandModel::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('brand_models')->withErrors(['success' => 'Model restored successfully']);
+    }
 }

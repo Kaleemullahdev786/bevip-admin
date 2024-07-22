@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Manufacturer;
 use App\Http\Requests\StoreManufacturerRequest;
 use App\Http\Requests\UpdateManufacturerRequest;
+use App\Services\CommonClass;
 use Inertia\Inertia;
 
 class ManufacturerController extends Controller
 {
+    public $common;
+
+
+    public function __construct(CommonClass $common)
+    {
+        $this->common = $common;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -41,15 +50,14 @@ class ManufacturerController extends Controller
     {
 
         $data = $request->validated();
+        $image = $this->common->upload($data['picture'][0],'manufacturers');
+        $data['image'] = $image[0];
         Manufacturer::create($data);
-        return to_route('manufacturers')->withErrors('success','Manufacturer created successfully');
+        return to_route('manufacturers')->withErrors(['success'=>'Manufacturer created successfully']);
 
 
 
     }
-
-
-
 
     /**
      * Display the specified resource.
@@ -64,7 +72,7 @@ class ManufacturerController extends Controller
      */
     public function edit(Manufacturer $manufacturer)
     {
-        return Inertia::render('Utils/Manufacturer/Edit', ['manufacturer' => $manufacturer]);
+        return Inertia::render('Utils/Manufacturers/Edit', ['manufacturer' => $manufacturer]);
     }
 
     /**
@@ -72,13 +80,14 @@ class ManufacturerController extends Controller
      */
     public function update(UpdateManufacturerRequest $request, Manufacturer $manufacturer)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('update manufacturers');
-        if(!$hasPermission){
-            abort(403);
-        }
         $data = $request->validated();
+        if(isset($data['picture'])){
+            $image = $this->common->upload($data['picture'][0],'manufacturers');
+                $data['image'] = $image[0];
+                $this->common->deleteImageFromDir($manufacturer->image,'manufacturers');
+            }
         $manufacturer->update($data);
-        return to_route('manufacturers')->withErrors('success','Manufacturer updated successfully');
+        return to_route('manufacturers')->withErrors(['success'=>'Manufacturer updated successfully']);
 
     }
 
@@ -91,13 +100,15 @@ class ManufacturerController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete(Manufacturer $manufacturer)
     {
         $hasPermission = auth()->user()->hasPermissionTo('delete manufacturers');
         if(!$hasPermission){
             abort(403);
         }
-        $manufacturer = Manufacturer::find($id);
+        $this->common->deleteImageFromDir($manufacturer->image,'manufacturers');
+        $manufacturer->delete();
+
         $manufacturer->delete();
 
 
@@ -106,18 +117,28 @@ class ManufacturerController extends Controller
 
 
 
-    public function block($id)
+    public function block(Manufacturer $manufacturer)
     {
-        $manufacturer = Manufacturer::find($id);
-        if($manufacturer->status == 'blocked'){
+
+        if($manufacturer->status == 'inactive'){
             $manufacturer->status = 'active';
         }else{
-        $manufacturer->status = 'blocked';
+        $manufacturer->status = 'inactive';
         }
         $manufacturer->save();
 
 
         return redirect()->route('manufacturers')->withErrors(['success' => 'Manufacturer status updated successfully']);
+    }
+
+    public function restored($id)
+    {
+
+        $record = Manufacturer::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('manufacturers')->withErrors(['success' => 'Manufacture restored successfully']);
     }
 
 }

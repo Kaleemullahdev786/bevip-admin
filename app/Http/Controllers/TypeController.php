@@ -5,10 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Type;
 use App\Http\Requests\StoreTypeRequest;
 use App\Http\Requests\UpdateTypeRequest;
+use App\Services\CommonClass;
 use Inertia\Inertia;
 
 class TypeController extends Controller
 {
+
+    public $common;
+
+
+    public function __construct(CommonClass $common)
+    {
+        $this->common = $common;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -40,8 +50,10 @@ class TypeController extends Controller
     {
 
         $data = $request->validated();
+        $image = $this->common->upload($data['icon'][0],'features');
+        $data['image'] = $image[0];
         Type::create($data);
-        return to_route('packages')->withErrors('success','Type created successfully');
+        return to_route('types')->withErrors(['success'=>'Type created successfully']);
 
 
 
@@ -71,13 +83,16 @@ class TypeController extends Controller
      */
     public function update(UpdateTypeRequest $request, Type $type)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('update types');
-        if(!$hasPermission){
-            abort(403);
-        }
+
         $data = $request->validated();
+        if(isset($data['icon'])){
+            $image = $this->common->upload($data['icon'][0],'types');
+                $data['image'] = $image[0];
+                $this->common->deleteImageFromDir($type->image,'types');
+            }
+
         $type->update($data);
-        return to_route('types')->withErrors('success','Type updated successfully');
+        return to_route('types')->withErrors(['success'=>'Type updated successfully']);
 
     }
 
@@ -90,13 +105,12 @@ class TypeController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete(Type $type)
     {
         $hasPermission = auth()->user()->hasPermissionTo('delete types');
         if(!$hasPermission){
             abort(403);
         }
-        $type = Type::find($id);
         $type->delete();
 
 
@@ -105,17 +119,24 @@ class TypeController extends Controller
 
 
 
-    public function block($id)
+    public function block(Type $type)
     {
-        $package = Type::find($id);
-        if($package->status == 'blocked'){
-            $package->status = 'active';
+        if($type->status == 'inactive'){
+            $type->status = 'active';
         }else{
-        $package->status = 'blocked';
+        $type->status = 'inactive';
         }
-        $package->save();
+        $type->save();
 
-        return redirect()->route('packages')->withErrors(['success' => 'Type status updated successfully']);
+        return redirect()->route('types')->withErrors(['success' => 'Type status updated successfully']);
     }
+    public function restored($id)
+    {
 
+        $record = Type::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('types')->withErrors(['success' => 'Type restored successfully']);
+    }
 }

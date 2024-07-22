@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('types', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('type')->nullable();
+            $table->integer('seats')->nullable();
+            $table->integer('doors')->nullable();
+            $table->string('image')->nullable();
+            $table->string('status')->default('active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -11,7 +11,7 @@ class StoreBrandModelRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->user()->hasPermissionTo('create brand_models');;
     }
 
     /**
@@ -22,7 +22,19 @@ class StoreBrandModelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required',
+            'manufacturer_id'=>'required|numeric'
         ];
+    }
+
+    public function prepareForvalidation(){
+
+        if(isset($this->input(['status'])['label'])){
+            $this->merge(['status'=>$this->input(['status'])['label']]);
+        };
+
+        $this->merge(['manufacturer_id'=>
+        $this->input(['manufacturer'])['value']]);
+
     }
 }

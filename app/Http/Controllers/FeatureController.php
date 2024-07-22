@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Feature;
 use App\Http\Requests\StoreFeatureRequest;
 use App\Http\Requests\UpdateFeatureRequest;
+use App\Services\CommonClass;
 use Inertia\Inertia;
 
 class FeatureController extends Controller
 {
+    public $common;
+
+
+    public function __construct(CommonClass $common)
+    {
+        $this->common = $common;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +27,8 @@ class FeatureController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $features = Feature::get();
+        $features = Feature::latest()->paginate(10);
+        // dd($features);
         return Inertia::render('Utils/Features/index', ['features' => $features]);
     }
 
@@ -31,8 +41,8 @@ class FeatureController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $perks = Perk::select('name as label', 'name as value')->get()->toArray();
-        return Inertia::render('Utils/Features/Create', ['perks' => $perks]);
+
+        return Inertia::render('Utils/Features/Create');
     }
 
     /**
@@ -41,9 +51,13 @@ class FeatureController extends Controller
     public function store(StoreFeatureRequest $request)
     {
 
+
         $data = $request->validated();
+
+        $image = $this->common->upload($data['icon'][0],'features');
+        $data['image'] = $image[0];
         Feature::create($data);
-        return to_route('features')->withErrors('success','Feature created successfully');
+        return to_route('features')->withErrors(['success'=>'Feature created successfully']);
 
 
 
@@ -74,14 +88,17 @@ class FeatureController extends Controller
      */
     public function update(UpdateFeatureRequest $request, Feature $feature)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('update features');
-        if(!$hasPermission){
-            abort(403);
-        }
+
         $data = $request->validated();
+        if(isset($data['icon'])){
+            $image = $this->common->upload($data['icon'][0],'features');
+                $data['image'] = $image[0];
+                $this->common->deleteImageFromDir($feature->image,'features');
+            }
+
 
         $feature->update($data);
-        return to_route('features')->withErrors('success','Feature updated successfully');
+        return to_route('features')->withErrors(['success'=>'Feature updated successfully']);
 
     }
 
@@ -94,14 +111,14 @@ class FeatureController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete(Feature $feature)
     {
         $hasPermission = auth()->user()->hasPermissionTo('delete features');
         if(!$hasPermission){
             abort(403);
         }
-        $package = Feature::find($id);
-        $package->delete();
+        $this->common->deleteImageFromDir($feature->image,'features');
+        $feature->delete();
 
 
         return redirect()->route('features')->withErrors(['success' => 'Feature deleted successfully']);
@@ -109,18 +126,29 @@ class FeatureController extends Controller
 
 
 
-    public function block($id)
+    public function block(Feature $feature)
     {
-        $features = Feature::find($id);
-        if($features->status == 'blocked'){
-            $features->status = 'active';
+        if($feature->status == 'inactive'){
+            $feature->status = 'active';
         }else{
-        $features->status = 'blocked';
+        $feature->status = 'inactive';
         }
-        $features->save();
+        $feature->save();
 
 
         return redirect()->route('features')->withErrors(['success' => 'Feature status updated successfully']);
     }
+
+    public function restored($id)
+    {
+
+        $record = Feature::withTrashed()->find($id);
+        $record->restored();
+
+
+        return redirect()->route('features')->withErrors(['success' => 'Feature restored successfully']);
+    }
+
+
 
 }

@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Vehicle;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
+use App\Models\BrandModel;
+use App\Models\Category;
+use App\Models\Color;
+use App\Models\Feature;
+use App\Models\Gallary;
+use App\Models\Manufacturer;
+use App\Models\Type;
 use App\Services\CommonClass;
 use Inertia\Inertia;
 
@@ -29,7 +36,10 @@ class VehicleController extends Controller
             abort(403);
         }
         $vehicles = Vehicle::get();
-        return Inertia::render('Utils/PaymentSettings/index', ['vehicles' => $vehicles]);
+        $features = Feature::withTrashed()->get()->pluck(null,'id');
+
+
+        return Inertia::render('Utils/Vehicles/index', ['vehicles' => $vehicles,'features'=>$features]);
     }
  /**
      * Show the form for creating a new resource.
@@ -40,8 +50,15 @@ class VehicleController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $vehicles = Vehicle::select('name as label', 'name as value')->get()->toArray();
-        return Inertia::render('Utils/Vehicles/Create', ['vehicles' => $vehicles]);
+
+        $manufacturers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
+        $types = Type::select('name as label', 'id as value')->get()->toArray();
+        $brand_models = BrandModel::select('name as label', 'id as value')->get()->toArray();
+        $catagories = Category::select('name as label', 'id as value')->get()->toArray();
+        $colors = Color::select('name as label', 'id as value')->get()->toArray();
+        $features = Feature::select('name as label', 'id as value')->get()->toArray();
+
+        return Inertia::render('Utils/Vehicles/Create',compact('manufacturers','types','brand_models','catagories','colors','features'));
     }
 
     /**
@@ -50,12 +67,30 @@ class VehicleController extends Controller
     public function store(StoreVehicleRequest $request)
     {
 
-        $data = $request->validated();
-        // $image = $this->common->upload($data['image'][0],'packages');
-        // $data['image_name'] = $image[1];
-        // $data['image'] = $image[0];
 
-        Vehicle::create($data);
+        $data = $request->validated();
+        $image = $this->common->upload($data['banner'][0],'banners');
+        $data['image'] = $image[0];
+
+        $image = $this->common->upload($data['video_option'][0],'videos');
+        $data['video'] = $image[0];
+
+
+        $gallary = $data['gallary'];
+        $features = $this->common->extractValuesFromArray($data['features'],'value');
+        unset($data['features']);
+        unset($data['video_option']);
+        unset($data['banner']);
+        unset($data['gallary']);
+        $data['all_features'] = implode(',',$features);
+        // dd($data);
+        $vehicle = Vehicle::create($data);
+        $images = $this->common->uploadImages($gallary,$vehicle->id,'gallary','vehicle_id');
+        // dd($images);
+        Gallary::insert($images);
+        // $data['banner'] = $image[0];
+
+        // Vehicle::create($data);
         return to_route('vehicles')->withErrors('success','Vehicles created successfully');
 
 
@@ -78,9 +113,16 @@ class VehicleController extends Controller
      */
     public function edit(Vehicle $vehicle)
     {
-        $vehicles = Vehicle::select('name as label', 'name as value')->get()->toArray();
-        $status = $this->common->convertIntoArray([$vehicle->status]);
-        return Inertia::render('Utils/Vehicles/Edit', ['vehicle' => $vehicle,'vehicles'=>$vehicles,'status'=>$status]);
+
+
+        $vehicle->load('gallary');
+        $manufacturers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
+        $types = Type::select('name as label', 'id as value')->get()->toArray();
+        $brand_models = BrandModel::select('name as label', 'id as value')->get()->toArray();
+        $catagories = Category::select('name as label', 'id as value')->get()->toArray();
+        $colors = Color::select('name as label', 'id as value')->get()->toArray();
+        $features = Feature::select('name as label', 'id as value')->get()->toArray();
+        return Inertia::render('Utils/Vehicles/Edit', compact('vehicle','manufacturers','types','brand_models','catagories','colors','features'));
     }
 
     /**
@@ -88,19 +130,41 @@ class VehicleController extends Controller
      */
     public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('update vehicles');
-        if(!$hasPermission){
-            abort(403);
-        }
+        // dd($request->all());
+
         $data = $request->validated();
-        if(isset($data['image'])){
-        $image = $this->common->upload($data['image'][0],'vehicles');
-            $data['image_name'] = $image[1];
-            $data['image'] = $image[0];
-            $this->common->deleteImageFromDir($vehicle->image,'vehicles');
+        if(isset($data['image']))
+        {
+        $image = $this->common->upload($data['banner'][0],'banners');
+        $data['image'] = $image[0];
         }
-        // dd($package);
+        if(isset($data['video_option']))
+        {
+        $image = $this->common->upload($data['video_option'][0],'videos');
+        $data['video'] = $image[0];
+        }
+
+        if(isset($data['video_option'])){
+            $gallary = $data['gallary'];
+            $images = $this->common->uploadImages($gallary,$vehicle->id,'gallary','vehicle_id');
+             Gallary::insert($images);
+        }
+
+        $features = $this->common->extractValuesFromArray($data['features'],'value');
+        unset($data['features']);
+        unset($data['video_option']);
+        unset($data['banner']);
+        unset($data['gallary']);
+        if(is_array($features))
+        $data['all_features'] = implode(',',$features);
+        else
+       $data['all_features'] = implode(',',$features);
+
         $vehicle->update($data);
+
+
+
+
         return to_route('vehicles')->withErrors('success','Vehicle updated successfully');
 
     }
@@ -114,14 +178,15 @@ class VehicleController extends Controller
     }
 
 
-    public function delete($id)
+    public function delete(Vehicle $vehicle)
     {
-        $hasPermission = auth()->user()->hasPermissionTo('delete vehicle');
+        $hasPermission = auth()->user()->hasPermissionTo('delete vehicles');
         if(!$hasPermission){
             abort(403);
         }
-        $vehicle = Vehicle::find($id);
-        $this->common->deleteImageFromDir($vehicle->image,'vehicle');
+
+        $vehicle->gallary()->delete();
+        $this->common->deleteImageFromDir($vehicle->image,'vehicles');
         $vehicle->delete();
 
 
@@ -130,18 +195,30 @@ class VehicleController extends Controller
 
 
 
-    public function block($id)
+    public function block(Vehicle $vehicle)
     {
-        $vehicle = Vehicle::find($id);
-        if($vehicle->status == 'blocked'){
+
+        if($vehicle->status == 'inactive'){
             $vehicle->status = 'active';
         }else{
-        $vehicle->status = 'blocked';
+        $vehicle->status = 'inactive';
         }
+
+
         $vehicle->save();
 
 
         return redirect()->route('vehicles')->withErrors(['success' => 'Vehicle status updated successfully']);
+    }
+
+    public function restored($id)
+    {
+
+        $vehicle = Vehicle::withTrashed()->find($id);
+        $vehicle->restored();
+
+
+        return redirect()->route('vehicles')->withErrors(['success' => 'Vehicle restored successfully']);
     }
 
 }
