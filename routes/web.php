@@ -68,7 +68,7 @@ Route::get('/dashboard/colors/edit/{color}', [ColorController::class, 'edit'])->
 Route::post('/dashboard/colors/update/{color}', [ColorController::class, 'update'])->name('colors.update');
 Route::get('/dashboard/colors/delete/{color}', [ColorController::class, 'delete'])->name('colors.delete');
 Route::get('/dashboard/colors/block/{color}', [ColorController::class, 'block'])->name('colors.block');
-
+Route::get('/dashboard/colors/restored/{id}', [ColorController::class, 'restored'])->name('colors.block');
 // Features Routes
 Route::get('/dashboard/features', [FeatureController::class, 'index'])->name('features');
 Route::get('/dashboard/features/create', [FeatureController::class, 'create'])->name('features.create');
@@ -77,7 +77,7 @@ Route::get('/dashboard/features/edit/{feature}', [FeatureController::class, 'edi
 Route::post('/dashboard/features/update/{feature}', [FeatureController::class, 'update'])->name('features.update');
 Route::get('/dashboard/features/delete/{feature}', [FeatureController::class, 'delete'])->name('features.delete');
 Route::get('/dashboard/features/block/{feature}', [FeatureController::class, 'block'])->name('features.block');
-
+Route::get('/dashboard/features/restored/{id}', [FeatureController::class, 'restored'])->name('features.block');
 
 // Manufacturers Routes
 Route::get('/dashboard/manufacturers', [ManufacturerController::class, 'index'])->name('manufacturers');
@@ -87,7 +87,7 @@ Route::get('/dashboard/manufacturers/edit/{manufacturer}', [ManufacturerControll
 Route::post('/dashboard/manufacturers/update/{manufacturer}', [ManufacturerController::class, 'update'])->name('manufacturers.update');
 Route::get('/dashboard/manufacturers/delete/{manufacturer}', [ManufacturerController::class, 'delete'])->name('manufacturers.delete');
 Route::get('/dashboard/manufacturers/block/{manufacturer}', [ManufacturerController::class, 'block'])->name('manufacturers.block');
-
+Route::get('/dashboard/manufacturers/restored/{id}', [ManufacturerController::class, 'restored'])->name('manufacturers.block');
 
 
 Route::get('/dashboard/brand_models', [BrandModelController::class, 'index'])->name('brand_models');
@@ -97,7 +97,7 @@ Route::get('/dashboard/brand_models/edit/{brand_model}', [BrandModelController::
 Route::post('/dashboard/brand_models/update/{brand_model}', [BrandModelController::class, 'update'])->name('brand_models.update');
 Route::get('/dashboard/brand_models/delete/{brand_model}', [BrandModelController::class, 'delete'])->name('brand_models.delete');
 Route::get('/dashboard/brand_models/block/{brand_model}', [BrandModelController::class, 'block'])->name('brand_models.block');
-
+Route::get('/dashboard/brand_models/restored/{id}', [BrandModelController::class, 'restored'])->name('brand_models.block');
 
 
 Route::get('/dashboard/types', [TypeController::class, 'index'])->name('types');
@@ -107,7 +107,7 @@ Route::get('/dashboard/types/edit/{type}', [TypeController::class, 'edit'])->nam
 Route::post('/dashboard/types/update/{type}', [TypeController::class, 'update'])->name('types.update');
 Route::get('/dashboard/types/delete/{type}', [TypeController::class, 'delete'])->name('types.delete');
 Route::get('/dashboard/types/block/{type}', [TypeController::class, 'block'])->name('types.block');
-
+Route::get('/dashboard/types/restored/{id}', [TypeController::class, 'restored'])->name('types.block');
 
 
 // categories Routes
@@ -119,7 +119,7 @@ Route::get('/dashboard/categories/edit/{category}', [CategoryController::class, 
 Route::post('/dashboard/categories/update/{category}', [CategoryController::class, 'update'])->name('categories.update');
 Route::get('/dashboard/categories/delete/{category}', [CategoryController::class, 'delete'])->name('categories.delete');
 Route::get('/dashboard/categories/block/{category}', [CategoryController::class, 'block'])->name('categories.block');
-
+Route::get('/dashboard/categories/restored/{id}', [CategoryController::class, 'restored'])->name('categories.block');
 // Vechile Routes
 Route::get('/dashboard/vehicles', [VehicleController::class, 'index'])->name('vehicles');
 Route::get('/dashboard/vehicles/create', [VehicleController::class, 'create'])->name('vehicles.create');
