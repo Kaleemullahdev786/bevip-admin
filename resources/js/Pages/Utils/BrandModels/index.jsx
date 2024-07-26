@@ -68,8 +68,8 @@ export default function Featrures({ brand_models }) {
                                 >
                                     {index + 1}
                                 </th>
-                                <td className="px-6 py-4">{item.name}</td>
-                                <td className="px-6 py-4">{item.manufacturer.name}</td>
+                                <td className="px-6 py-4">{item.model}</td>
+                                <td className="px-6 py-4">{item.manufacturer.make}</td>
 
                                 <td className="px-6 py-4"><Tags type={item.status.toLowerCase()} /></td>
                                 <td className="px-6 py-4 flex justify-end">
@@ -77,6 +77,8 @@ export default function Featrures({ brand_models }) {
                                         editRoute={`/dashboard/brand_models/edit/${item.id}`}
                                         deleteRoute={`/dashboard/brand_models/delete/${item.id}`}
                                         blockRoute={`/dashboard/brand_models/block/${item.id}`}
+                                        restoreRoute={`/dashboard/brand_models/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>

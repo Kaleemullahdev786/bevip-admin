@@ -13,6 +13,7 @@ class Vehicle extends Model
     use HasFactory,SoftDeletes;
 
     public $guarded =  ['id'];
+    protected $table = 'vehicles';
     protected $with = ['manufacturer','brandmodel','color'];
     public function gallary():HasMany
     {
@@ -21,12 +22,12 @@ class Vehicle extends Model
 
     public function manufacturer():hasOne
     {
-        return $this->hasOne(Manufacturer::class,'id','manufacturer_id');
+        return $this->hasOne(Manufacturer::class,'id','make_id');
     }
 
     public function brandmodel():HasOne
     {
-        return $this->hasOne(BrandModel::class,'id','brand_model_id');
+        return $this->hasOne(BrandModel::class,'id','model_id');
     }
     public function color():HasOne
     {

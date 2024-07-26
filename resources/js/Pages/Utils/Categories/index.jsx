@@ -70,7 +70,7 @@ export default function Featrures({ categories }) {
                                 </th>
                                 <td className="px-6 py-4">{item.name}</td>
                                 <img
-                                        src={item.image}
+                                        src={item.full_path}
                                         alt={item.name}
                                         className="w-10 h-10 object-cover rounded-full"
                                     />
@@ -80,6 +80,8 @@ export default function Featrures({ categories }) {
                                         editRoute={`/dashboard/categories/edit/${item.id}`}
                                         deleteRoute={`/dashboard/categories/delete/${item.id}`}
                                         blockRoute={`/dashboard/categories/block/${item.id}`}
+                                        restoreRoute={`/dashboard/categories/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>

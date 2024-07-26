@@ -31,9 +31,9 @@ export default function Edit({ color }) {
             toast.success(errors.success);
         }
 
-        else if (errors && errors.name) {
+        else if (errors && errors.color) {
             //reset form //
-            toast.success(errors.name);
+            toast.success(errors.color);
         }
 
         else if (errors && errors.code) {
@@ -55,8 +55,8 @@ export default function Edit({ color }) {
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
                     <Controller
-                            name="name"
-                            defaultValue={color.name}
+                            name="colors"
+                            defaultValue={color.color}
                             control={control}
                             rules={{
                                 required: true,
@@ -79,7 +79,8 @@ export default function Edit({ color }) {
                         />
 
                        <Controller
-                      defaultValue={color.status}
+
+                      defaultValue={color.status.slice(0,1).toUpperCase()+ color.status.slice(1)}
                        name="status"
                        control={control}
                        rules={{

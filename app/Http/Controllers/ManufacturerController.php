@@ -27,7 +27,7 @@ class ManufacturerController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $manufacturers = Manufacturer::get();
+        $manufacturers = Manufacturer::withTrashed()->latest()->get();
         return Inertia::render('Utils/Manufacturers/index', ['manufacturers' => $manufacturers]);
     }
 
@@ -50,8 +50,10 @@ class ManufacturerController extends Controller
     {
 
         $data = $request->validated();
-        $image = $this->common->upload($data['picture'][0],'manufacturers');
-        $data['image'] = $image[0];
+        $image = $this->common->upload($data['picture'][0],'CarManufacturers');
+        $data['image'] = $image[1];
+        $data['full_path'] = $image[0];
+
         Manufacturer::create($data);
         return to_route('manufacturers')->withErrors(['success'=>'Manufacturer created successfully']);
 
@@ -82,9 +84,10 @@ class ManufacturerController extends Controller
     {
         $data = $request->validated();
         if(isset($data['picture'])){
-            $image = $this->common->upload($data['picture'][0],'manufacturers');
-                $data['image'] = $image[0];
-                $this->common->deleteImageFromDir($manufacturer->image,'manufacturers');
+            $image = $this->common->upload($data['picture'][0],'CarManufacturers');
+                $data['image'] = $image[1];
+                $data['full_path'] = $image[0];
+                $this->common->deleteImageFromDir($manufacturer->full_path,'CarManufacturers');
             }
         $manufacturer->update($data);
         return to_route('manufacturers')->withErrors(['success'=>'Manufacturer updated successfully']);
@@ -135,7 +138,7 @@ class ManufacturerController extends Controller
     {
 
         $record = Manufacturer::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('manufacturers')->withErrors(['success' => 'Manufacture restored successfully']);

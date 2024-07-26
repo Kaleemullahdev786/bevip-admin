@@ -35,7 +35,7 @@ class VehicleController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $vehicles = Vehicle::get();
+        $vehicles = Vehicle::withTrashed()->latest()->get();
         $features = Feature::withTrashed()->get()->pluck(null,'id');
 
 
@@ -50,13 +50,12 @@ class VehicleController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-
-        $manufacturers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
-        $types = Type::select('name as label', 'id as value')->get()->toArray();
-        $brand_models = BrandModel::select('name as label', 'id as value')->get()->toArray();
+        $manufacturers = Manufacturer::select('make as label', 'id as value')->get()->toArray();
+        $types = Type::select('displayname as label', 'id as value')->get()->toArray();
+        $brand_models = BrandModel::select('model as label', 'id as value')->get()->toArray();
         $catagories = Category::select('name as label', 'id as value')->get()->toArray();
-        $colors = Color::select('name as label', 'id as value')->get()->toArray();
-        $features = Feature::select('name as label', 'id as value')->get()->toArray();
+        $colors = Color::select('color as label', 'id as value')->get()->toArray();
+        $features = Feature::select('feature as label', 'id as value')->get()->toArray();
 
         return Inertia::render('Utils/Vehicles/Create',compact('manufacturers','types','brand_models','catagories','colors','features'));
     }
@@ -69,11 +68,16 @@ class VehicleController extends Controller
 
 
         $data = $request->validated();
-        $image = $this->common->upload($data['banner'][0],'banners');
-        $data['image'] = $image[0];
+        // dd($data);
+        $image = $this->common->upload($data['banner'][0],'CarMedia');
+        $data['vehicle_image'] = $image[1];
+        $data['full_path'] = $image[0];
 
-        $image = $this->common->upload($data['video_option'][0],'videos');
-        $data['video'] = $image[0];
+        if(isset($data['video_option'])){
+            $image = $this->common->upload($data['video_option'][0],'CarMedia');
+            $data['video'] = $image[0];
+
+        }
 
 
         $gallary = $data['gallary'];
@@ -82,10 +86,11 @@ class VehicleController extends Controller
         unset($data['video_option']);
         unset($data['banner']);
         unset($data['gallary']);
+        unset($data['image']);
         $data['all_features'] = implode(',',$features);
         // dd($data);
         $vehicle = Vehicle::create($data);
-        $images = $this->common->uploadImages($gallary,$vehicle->id,'gallary','vehicle_id');
+        $images = $this->common->uploadImages($gallary,$vehicle->id,'CarMedia','vehicle_id');
         // dd($images);
         Gallary::insert($images);
         // $data['banner'] = $image[0];
@@ -115,13 +120,14 @@ class VehicleController extends Controller
     {
 
 
+
         $vehicle->load('gallary');
-        $manufacturers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
-        $types = Type::select('name as label', 'id as value')->get()->toArray();
-        $brand_models = BrandModel::select('name as label', 'id as value')->get()->toArray();
+        $manufacturers = Manufacturer::select('make as label', 'id as value')->get()->toArray();
+        $types = Type::select('displayname as label', 'id as value')->get()->toArray();
+        $brand_models = BrandModel::select('model as label', 'id as value')->get()->toArray();
         $catagories = Category::select('name as label', 'id as value')->get()->toArray();
-        $colors = Color::select('name as label', 'id as value')->get()->toArray();
-        $features = Feature::select('name as label', 'id as value')->get()->toArray();
+        $colors = Color::select('color as label', 'id as value')->get()->toArray();
+        $features = Feature::select('feature as label', 'id as value')->get()->toArray();
         return Inertia::render('Utils/Vehicles/Edit', compact('vehicle','manufacturers','types','brand_models','catagories','colors','features'));
     }
 
@@ -135,18 +141,20 @@ class VehicleController extends Controller
         $data = $request->validated();
         if(isset($data['image']))
         {
-        $image = $this->common->upload($data['banner'][0],'banners');
-        $data['image'] = $image[0];
+        $image = $this->common->upload($data['banner'][0],'CarMedia');
+        $data['vehicle_image'] = $image[1];
+        $data['full_path'] = $image[0];
+
         }
         if(isset($data['video_option']))
         {
-        $image = $this->common->upload($data['video_option'][0],'videos');
+        $image = $this->common->upload($data['video_option'][0],'CarMedia');
         $data['video'] = $image[0];
         }
 
         if(isset($data['video_option'])){
             $gallary = $data['gallary'];
-            $images = $this->common->uploadImages($gallary,$vehicle->id,'gallary','vehicle_id');
+            $images = $this->common->uploadImages($gallary,$vehicle->id,'CarMedia','vehicle_id');
              Gallary::insert($images);
         }
 
@@ -155,6 +163,7 @@ class VehicleController extends Controller
         unset($data['video_option']);
         unset($data['banner']);
         unset($data['gallary']);
+        unset($data['image']);
         if(is_array($features))
         $data['all_features'] = implode(',',$features);
         else
@@ -186,7 +195,7 @@ class VehicleController extends Controller
         }
 
         $vehicle->gallary()->delete();
-        $this->common->deleteImageFromDir($vehicle->image,'vehicles');
+        $this->common->deleteImageFromDir($vehicle->image,'CarMedia');
         $vehicle->delete();
 
 
@@ -214,8 +223,10 @@ class VehicleController extends Controller
     public function restored($id)
     {
 
+
         $vehicle = Vehicle::withTrashed()->find($id);
-        $vehicle->restored();
+        // dd($id,$vehicle);
+        $vehicle->restore();
 
 
         return redirect()->route('vehicles')->withErrors(['success' => 'Vehicle restored successfully']);

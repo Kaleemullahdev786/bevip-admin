@@ -34,7 +34,7 @@ export default function YachtSizes({ colors }) {
                                 ID
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                name
+                            color
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Code
@@ -67,9 +67,9 @@ export default function YachtSizes({ colors }) {
                                 >
                                     {index + 1}
                                 </th>
-                                <td className="px-6 py-4">{item.name}</td>
+                                <td className="px-6 py-4">{item.color}</td>
                                 <td className="px-6 py-4">
-                                <span style={{backgroundColor: item.code, color:'white'}} >{item.name}</span>
+                                <span style={{backgroundColor: item.code, color:'white'}} >{item.color}</span>
 
                                 </td>
                                 <td className="px-6 py-4"><Tags type={item.status.toLowerCase()} /></td>
@@ -78,6 +78,8 @@ export default function YachtSizes({ colors }) {
                                         editRoute={`/dashboard/colors/edit/${item.id}`}
                                         deleteRoute={`/dashboard/colors/delete/${item.id}`}
                                         blockRoute={`/dashboard/colors/block/${item.id}`}
+                                        restoreRoute={`/dashboard/colors/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>

@@ -41,7 +41,7 @@ export default function Sidebar() {
             isActive: false,
             isDropdown: true,
             dropdownItems: [
-                {name:'Bookings', href:"/dashboard/users"},
+                {name:'Bookings', href:"/dashboard/bookings"},
                 {name:'New Bookings', href:"/dashboard/users"},
                 {name:'Booking Calender', href:"/dashboard/users"},
                 {name:'Manufacturers', href:"/dashboard/users"},
@@ -59,7 +59,7 @@ export default function Sidebar() {
             isActive: false,
             isDropdown: true,
             dropdownItems: [
-                {name:'Customers', href:"/dashboard/users"},
+                {name:'Customers', href:"/dashboard/customers"},
                 {name:'Users', href:"/dashboard/users"},
                 {name:'Permissions', href:"/dashboard/roles"}
             ],

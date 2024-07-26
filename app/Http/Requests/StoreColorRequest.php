@@ -23,7 +23,7 @@ class StoreColorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|unique:colors,name',
+            'color'=>'required|unique:vehicle_colors,color',
             'code'=>'required|string',
             'status'=>'required'
         ];
@@ -34,6 +34,8 @@ class StoreColorRequest extends FormRequest
         if(isset($this->input(['status'])['label'])){
             $this->merge(['status'=>$this->input(['status'])['label']]);
         };
+
+
 
     }
 }

@@ -26,7 +26,7 @@ class CategoryController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $categories = Category::get();
+        $categories = Category::withTrashed()->latest()->get();
         return Inertia::render('Utils/Categories/index', ['categories' => $categories]);
     }
 
@@ -49,8 +49,9 @@ class CategoryController extends Controller
     {
 
         $data = $request->validated();
-        $image = $this->common->upload($data['icon'][0],'categories');
-        $data['image'] = $image[0];
+        $image = $this->common->upload($data['icon'][0],'CarGroups');
+        $data['image'] = $image[1];
+        $data['full_path'] = $image[0];
 
         Category::create($data);
         return to_route('categories')->withErrors('success','Category created successfully');
@@ -86,9 +87,10 @@ class CategoryController extends Controller
     {
         $data = $request->validated();
         if(isset($data['icon'])){
-            $image = $this->common->upload($data['icon'][0],'features');
-                $data['image'] = $image[0];
-                $this->common->deleteImageFromDir($feature->image,'features');
+            $image = $this->common->upload($data['icon'][0],'CarGroups');
+            $data['image'] = $image[1];
+            $data['full_path'] = $image[0];
+                $this->common->deleteImageFromDir($category->image,'CarGroups');
             }
         $category->update($data);
         return to_route('categories')->withErrors('success','Category updated successfully');
@@ -110,7 +112,7 @@ class CategoryController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $this->common->deleteImageFromDir($category->image,'categories');
+        $this->common->deleteImageFromDir($category->image,'CarGroups');
         $category->delete();
         return redirect()->route('categories')->withErrors(['success' => 'Category deleted successfully']);
     }
@@ -135,7 +137,7 @@ class CategoryController extends Controller
     {
 
         $record = Category::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('categories')->withErrors(['success' => 'Category restored successfully']);

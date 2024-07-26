@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\ValidationData;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTypeRequest extends FormRequest
 {
+    use ValidationData;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -22,10 +24,10 @@ class StoreTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required',
+            'displayname'=>'required',
             'seats'=>'required',
-            'type'=>'required',
-            'doors'=>'required',
+            'vehicletype'=>'required',
+            'noofdoor'=>'required',
             'icon'=>'required|required',
             'icon.*'=>'file|mimes:png,jpg',
             'status'=>'required'
@@ -34,9 +36,12 @@ class StoreTypeRequest extends FormRequest
 
     public function prepareForvalidation(){
 
-        if(isset($this->input(['status'])['label'])){
-            $this->merge(['status'=>$this->input(['status'])['label']]);
-        };
+
+            $this->merge(['status'=>$this->getValues('status')]);
+            $this->merge(['displayname'=>$this->input('name')]);
+            $this->merge(['vehicletype'=>$this->input('type')]);
+            $this->merge(['noofdoor'=>$this->input('doors')]);
+
 
     }
 }

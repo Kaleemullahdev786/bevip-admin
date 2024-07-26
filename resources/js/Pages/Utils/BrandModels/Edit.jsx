@@ -53,8 +53,8 @@ export default function Edit({ brand_model,manufactuers}) {
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
                     <Controller
-                            name="name"
-                            defaultValue={brand_model.name}
+                            name="model"
+                            defaultValue={brand_model.model}
                             control={control}
                             rules={{
                                 required: true,

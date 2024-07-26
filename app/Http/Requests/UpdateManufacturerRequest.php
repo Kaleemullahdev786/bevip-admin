@@ -24,7 +24,7 @@ class UpdateManufacturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|unique:manufacturers,name,'.$this->manufacturer->id,
+            'make'=>'required|unique:vehicle_make,make,'.$this->manufacturer->id,
             'picture'=>'nullable|array',
             'picture.*'=>'file|mimes:png,jpg',
             'status'=>'required'

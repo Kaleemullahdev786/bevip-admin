@@ -24,10 +24,10 @@ class UpdateTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required',
+            'displayname'=>'required',
             'seats'=>'required',
-            'type'=>'required',
-            'doors'=>'required',
+            'vehicletype'=>'required',
+            'noofdoor'=>'required',
             'icon'=>'required|required',
             'icon.*'=>'file|mimes:png,jpg',
             'status'=>'required'
@@ -36,6 +36,9 @@ class UpdateTypeRequest extends FormRequest
     public function prepareForvalidation(){
 
         $this->merge(['status'=>$this->getValues('status')]);
+            $this->merge(['displayname'=>$this->input('name')]);
+            $this->merge(['vehicletype'=>$this->input('type')]);
+            $this->merge(['noofdoor'=>$this->input('doors')]);
 
 
     }

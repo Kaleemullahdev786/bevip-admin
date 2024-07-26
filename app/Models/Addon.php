@@ -9,6 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Addon extends Model
 {
     use HasFactory,SoftDeletes;
-
+    protected $table = 'extra_addons';
     public $guarded =  ['id'];
 }

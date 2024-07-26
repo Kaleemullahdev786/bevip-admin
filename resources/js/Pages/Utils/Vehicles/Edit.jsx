@@ -153,7 +153,7 @@ export default function Edit({ vehicle,manufacturers,types,brand_models,catagori
                         <div class="grid grid-cols-3 gap-4 p-4">
 
                             <Controller
-                            defaultValue={vehicle.name}
+                            defaultValue={vehicle.carname}
                                 name="name"
                                 control={control}
                                 rules={{
@@ -270,7 +270,7 @@ export default function Edit({ vehicle,manufacturers,types,brand_models,catagori
 
 
                             <Controller
-                            defaultValue={vehicle.manufacturer_id}
+                            defaultValue={vehicle.make_id}
 
                                 name="manufacturer"
                                 control={control}
@@ -287,7 +287,7 @@ export default function Edit({ vehicle,manufacturers,types,brand_models,catagori
                             />
 
                             <Controller
-                            defaultValue={vehicle.brand_model_id}
+                            defaultValue={vehicle.model_id}
 
                                 name="models"
                                 control={control}
@@ -340,7 +340,7 @@ export default function Edit({ vehicle,manufacturers,types,brand_models,catagori
 
 
                             <Controller
-                            defaultValue={vehicle.category_id}
+                            defaultValue={vehicle.group_id}
 
                                 name="category"
                                 control={control}
@@ -496,20 +496,7 @@ export default function Edit({ vehicle,manufacturers,types,brand_models,catagori
                                     />
                                 )}
                             />
-                            <Controller
-                            defaultValue={vehicle.car_description}
-                                name="car_description"
-                                control={control}
-                                rules={{
-                                    required: true,
-                                }}
-                                render={({ field }) => (
-                                    <RichTextEditor
-                                        name={field.name}
-                                        control={control}
-                                        defaultValue={field.value}
-                                    />)}
-                            />
+
 
                         </div>
                         <SubmitButton

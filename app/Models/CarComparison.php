@@ -10,4 +10,5 @@ class CarComparison extends Model
     use HasFactory;
 
     public $guarded =  ['id'];
+    protected $table = 'vehicle_colors';
 }

@@ -19,7 +19,7 @@ class ColorController extends Controller
             abort(403);
         }
 
-        $colors = Color::all();
+        $colors = Color::withTrashed()->latest()->get();
         return Inertia::render('Utils/Colors/index', ['colors' => $colors]);
     }
 
@@ -65,7 +65,10 @@ class ColorController extends Controller
      */
     public function update(UpdateColorRequest $request, Color $color)
     {
-        $color->update($request->validated());
+        $data = $request->validated();
+        $data['color'] = $data['colors'];
+        unset($data['colors']);
+        $color->update($data);
         return to_route('colors')->withErrors(['success'=>'Color updated successfully']);
 
     }
@@ -105,7 +108,7 @@ class ColorController extends Controller
     {
 
         $record = Color::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('colors')->withErrors(['success' => 'Color restored successfully']);

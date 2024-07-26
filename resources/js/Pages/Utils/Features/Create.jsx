@@ -33,9 +33,9 @@ export default function Create() {
             reset();
             toast.success(errors.success);
         }
-        else if (errors && errors.name) {
+        else if (errors && errors.feature) {
             //reset form //
-            toast.success(errors.name);
+            toast.success(errors.feature);
         }
         else if (errors && errors.status) {
             //reset form //
@@ -53,7 +53,7 @@ export default function Create() {
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Controller
-                            name="name"
+                            name="feature"
                             control={control}
                             rules={{
                                 required: true,

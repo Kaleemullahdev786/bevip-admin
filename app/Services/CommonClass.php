@@ -52,13 +52,11 @@ class CommonClass
 
     public function checkDir($dir){
 
-        $path = public_path().'/assets/'.$dir;
+        $path =public_path('../../'."uploads/".$dir);
 
         if(!File::isDirectory($path)){
             File::makeDirectory($path, 0777, true, true);
         }
-
-        // File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
 
     }
 
@@ -71,9 +69,13 @@ class CommonClass
             $ofilename = $object->getClientOriginalName();
             $filename = str_replace(' ', '_', $ofilename);
             $uniqueFilename = uniqid() . '_' . $filename;
-            $destinationPath = public_path("/assets/".$dir);
-            $amenityImage->save($destinationPath . '/' . $uniqueFilename);
-            return  [asset('/assets/'.$dir).'/'.$uniqueFilename,$filename];
+             $destinationPath = public_path('../..'."/uploads/".$dir);
+
+             $amenityImage->save($destinationPath . '/' . $uniqueFilename);
+
+
+            return  [env('APP_URL').'/uploads/'.$dir.'/'.$uniqueFilename,$filename];
+            // return  [asset('/assets/'.$dir).'/'.$uniqueFilename,$filename];
 
         }
     }
@@ -84,7 +86,7 @@ class CommonClass
         $imagename = explode('/', $image);
         // Delete from the directory
         if (count($imagename) > 4) {
-            $path  = public_path('assets/' . $dir . '/' . $imagename[5]);
+            $path  = public_path('../..'."/uploads/".$dir . '/' . $imagename[5]); //public_path('assets/' . $dir . '/' . $imagename[5]);
             if (file_exists($path)) {
                 unlink($path);
             }

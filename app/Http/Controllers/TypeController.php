@@ -28,7 +28,7 @@ class TypeController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $types = Type::get();
+        $types = Type::withTrashed()->latest()->get();
         return Inertia::render('Utils/Types/index', ['types' => $types]);
     }
  /**
@@ -50,8 +50,9 @@ class TypeController extends Controller
     {
 
         $data = $request->validated();
-        $image = $this->common->upload($data['icon'][0],'features');
-        $data['image'] = $image[0];
+        $image = $this->common->upload($data['icon'][0],'CarType');
+        $data['icon'] = $image[1];
+        $data['full_path'] = $image[0];
         Type::create($data);
         return to_route('types')->withErrors(['success'=>'Type created successfully']);
 
@@ -86,9 +87,10 @@ class TypeController extends Controller
 
         $data = $request->validated();
         if(isset($data['icon'])){
-            $image = $this->common->upload($data['icon'][0],'types');
-                $data['image'] = $image[0];
-                $this->common->deleteImageFromDir($type->image,'types');
+            $image = $this->common->upload($data['icon'][0],'CarType');
+                $data['icon'] = $image[1];
+                $data['full_path'] = $image[0];
+                $this->common->deleteImageFromDir($type->image,'CarType');
             }
 
         $type->update($data);
@@ -134,7 +136,7 @@ class TypeController extends Controller
     {
 
         $record = Type::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('types')->withErrors(['success' => 'Type restored successfully']);

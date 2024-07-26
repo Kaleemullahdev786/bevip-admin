@@ -22,8 +22,8 @@ class StoreBrandModelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required',
-            'manufacturer_id'=>'required|numeric'
+            'model'=>'required',
+            'make_id'=>'required|numeric'
         ];
     }
 
@@ -33,7 +33,7 @@ class StoreBrandModelRequest extends FormRequest
             $this->merge(['status'=>$this->input(['status'])['label']]);
         };
 
-        $this->merge(['manufacturer_id'=>
+        $this->merge(['make_id'=>
         $this->input(['manufacturer'])['value']]);
 
     }

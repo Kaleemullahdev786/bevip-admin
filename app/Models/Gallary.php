@@ -9,4 +9,5 @@ class Gallary extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    protected $table = 'gallaries';
 }

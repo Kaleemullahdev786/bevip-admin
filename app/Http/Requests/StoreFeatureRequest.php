@@ -22,7 +22,7 @@ class StoreFeatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|unique:features,name',
+            'feature'=>'required|unique:vehicle_feature,feature',
             'icon'=>'required|required',
             'icon.*'=>'file|mimes:png,jpg',
             'status'=>'required'

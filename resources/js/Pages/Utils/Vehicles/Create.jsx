@@ -151,7 +151,13 @@ export default function Create({manufacturers,types,brand_models,catagories,colo
         <DashboardLayout>
             <TopMenu title={"Create Vehicle"} />
             <div className="flex flex-col-2 justify-center mt-5">
+
+
+
+
                 <div className="xl:w-5/6">
+
+
                     <form onSubmit={handleSubmit(onSubmit)}>
                     <div class="grid grid-cols-3 gap-4 p-4">
 
@@ -478,19 +484,7 @@ export default function Create({manufacturers,types,brand_models,catagories,colo
                            />
                        )}
                    />
-                     <Controller
-                            name="car description"
-                            control={control}
-                            rules={{
-                                required: true,
-                            }}
-                            render={({ field }) => (
-                                <RichTextEditor
-                                    name={field.name}
-                                    control={control}
-                                    defaultValue={field.value}
-                                /> )}
-                                />
+
 
                 </div>
                         <SubmitButton

@@ -11,4 +11,5 @@ class Type extends Model
     use HasFactory,SoftDeletes;
 
     public $guarded =  ['id'];
+    protected $table = 'vehicle_types';
 }
