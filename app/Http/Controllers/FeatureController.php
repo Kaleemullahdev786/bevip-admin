@@ -27,7 +27,7 @@ class FeatureController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $features = Feature::latest()->paginate(10);
+        $features = Feature::withTrashed()->latest()->paginate(10);
         // dd($features);
         return Inertia::render('Utils/Features/index', ['features' => $features]);
     }
@@ -54,8 +54,11 @@ class FeatureController extends Controller
 
         $data = $request->validated();
 
-        $image = $this->common->upload($data['icon'][0],'features');
-        $data['image'] = $image[0];
+        $image = $this->common->upload($data['icon'][0],'FeatureIcons');
+        $data['image'] = $image[1];
+        $data['full_path'] = $image[0];
+        // dd($image);
+
         Feature::create($data);
         return to_route('features')->withErrors(['success'=>'Feature created successfully']);
 
@@ -90,11 +93,17 @@ class FeatureController extends Controller
     {
 
         $data = $request->validated();
+        // dd($data);
         if(isset($data['icon'])){
-            $image = $this->common->upload($data['icon'][0],'features');
-                $data['image'] = $image[0];
-                $this->common->deleteImageFromDir($feature->image,'features');
+            $image = $this->common->upload($data['icon'][0],'FeatureIcons');
+                $data['image'] = $image[1];
+                $data['full_path'] = $image[0];
+                $this->common->deleteImageFromDir($feature->full_path,'FeatureIcons');
             }
+
+
+            $data['feature'] = $data['feature_name'];
+            unset($data['feature_name']);
 
 
         $feature->update($data);
@@ -143,7 +152,7 @@ class FeatureController extends Controller
     {
 
         $record = Feature::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('features')->withErrors(['success' => 'Feature restored successfully']);

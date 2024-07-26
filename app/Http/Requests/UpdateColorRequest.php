@@ -21,8 +21,9 @@ class UpdateColorRequest extends FormRequest
      */
     public function rules(): array
     {
+        // dd($this->color->id);
         return [
-            'name'=>'required|unique:colors,name,'.$this->color->id,
+            'colors'=>'required|unique:vehicle_colors,color,'.$this->color->id,
             'code'=>'required|string',
             'status'=>'required'
         ];
@@ -33,6 +34,10 @@ class UpdateColorRequest extends FormRequest
         if(isset($this->input(['status'])['label'])){
             $this->merge(['status'=>$this->input(['status'])['label']]);
         };
+
+
+        // $this->merge(['color1'=>$this->input('colors')]);
+
 
     }
 }

@@ -68,10 +68,10 @@ export default function Featrures({ features }) {
                                 >
                                     {index + 1}
                                 </th>
-                                <td className="px-6 py-4">{item.name}</td>
+                                <td className="px-6 py-4">{item.feature}</td>
                                 <img
-                                        src={item.image}
-                                        alt={item.name}
+                                        src={item.full_path}
+                                        alt={item.feature}
                                         className="w-10 h-10 object-cover rounded-full"
                                     />
                                 <td className="px-6 py-4"><Tags type={item.status.toLowerCase()} /></td>
@@ -80,6 +80,8 @@ export default function Featrures({ features }) {
                                         editRoute={`/dashboard/features/edit/${item.id}`}
                                         deleteRoute={`/dashboard/features/delete/${item.id}`}
                                         blockRoute={`/dashboard/features/block/${item.id}`}
+                                        restoreRoute={`/dashboard/features/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>
@@ -89,7 +91,7 @@ export default function Featrures({ features }) {
                 <div className="mt-8 flex justify-end items-center">
 
 
-                    {/* <Pagination links = {features.links}  /> */}
+                    <Pagination links = {features.links}  />
                 </div>
 
             </div>

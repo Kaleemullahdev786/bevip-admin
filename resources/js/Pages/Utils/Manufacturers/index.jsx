@@ -68,9 +68,9 @@ export default function Featrures({ manufacturers }) {
                                 >
                                     {index + 1}
                                 </th>
-                                <td className="px-6 py-4">{item.name}</td>
+                                <td className="px-6 py-4">{item.make}</td>
                                 <img
-                                        src={item.image}
+                                        src={item.full_path}
                                         alt={item.name}
                                         className="w-10 h-10 object-cover rounded-full"
                                     />
@@ -80,6 +80,8 @@ export default function Featrures({ manufacturers }) {
                                         editRoute={`/dashboard/manufacturers/edit/${item.id}`}
                                         deleteRoute={`/dashboard/manufacturers/delete/${item.id}`}
                                         blockRoute={`/dashboard/manufacturers/block/${item.id}`}
+                                        restoreRoute={`/dashboard/manufacturers/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>

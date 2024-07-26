@@ -138,7 +138,7 @@ class CustomerController extends Controller
     {
 
         $record = Customer::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('customers')->withErrors(['success' => 'customer restored successfully']);

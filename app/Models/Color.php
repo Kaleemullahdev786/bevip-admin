@@ -12,6 +12,8 @@ class Color extends Model
     use HasFactory,SoftDeletes;
 
     public $guarded =  ['id'];
+    protected $table = 'vehicle_colors';
+    protected $primaryKey  = 'id';
 
     public function vehicles():HasMany
     {

@@ -28,6 +28,8 @@ export default function Featrures({ vehicles,features }) {
                 linkText={"Add New"}
             />
 
+
+
             <div className="relative overflow-x-auto sm:rounded-lg mt-5">
                 <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-lightergray">
@@ -67,7 +69,7 @@ export default function Featrures({ vehicles,features }) {
                     <tbody>
                         {vehicles?.length === 0 && (
                             <tr>
-                                <td colSpan="5" className="text-center py-4">
+                                <td colSpan="9" className="text-center py-4">
                                     No data found
                                 </td>
                             </tr>
@@ -87,12 +89,12 @@ export default function Featrures({ vehicles,features }) {
 
 
                                 </th>
-                                <td className="px-6 py-4">{item.name}</td>
-                                <td className="px-6 py-4">{item.manufacturer?.name}</td>
-                                <td className="px-6 py-4">{item.brandmodel?.name}</td>
+                                <td className="px-6 py-4">{item.carname}</td>
+                                <td className="px-6 py-4">{item.manufacturer?.make}</td>
+                                <td className="px-6 py-4">{item.brandmodel?.model}</td>
 
 
-                                <td className="px-6 py-4"> <span style={{backgroundColor: item.color?.code, color:'white'}} >{item.color?.name}</span></td>
+                                <td className="px-6 py-4"> <span style={{backgroundColor: item.color?.code, color:'white'}} >{item.color?.color}</span></td>
 
                                 <td className="px-6 py-4">
                                 <ul class="max-w-md space-y-1 text-gray-500 list-inside dark:text-gray-400">
@@ -104,7 +106,7 @@ export default function Featrures({ vehicles,features }) {
                                         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
                                      </svg>
 
-                                     {features[item2].name}
+                                     {features[item2].feature}
                                       {features[item2].deleted_at !== null && <span id="badge-dismiss-red" class="inline-flex items-center px-2 py-1 me-2 text-sm font-medium text-red-800 bg-red-100 rounded dark:bg-red-900 dark:text-red-300">deleted</span>
 
 
@@ -117,8 +119,8 @@ export default function Featrures({ vehicles,features }) {
 
                               <td>
                                 <img
-                                        src={item.image}
-                                        alt={item.name}
+                                        src={item.full_path}
+                                        alt={item.carname}
                                         className="w-10 h-10 object-cover rounded-full"
                                     /></td>
                                 <td className="px-6 py-4"><Tags type={item.status.toLowerCase()} /></td>
@@ -127,6 +129,8 @@ export default function Featrures({ vehicles,features }) {
                                         editRoute={`/dashboard/vehicles/edit/${item.id}`}
                                         deleteRoute={`/dashboard/vehicles/delete/${item.id}`}
                                         blockRoute={`/dashboard/vehicles/block/${item.id}`}
+                                        restoreRoute={`/dashboard/vehicles/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>

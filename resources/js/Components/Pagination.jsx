@@ -3,7 +3,6 @@ import { useState } from "react";
 const Pagination = ({ links }) => {
     // const [currentPage, setCurrentPage] = useState(1);
     // const onPageChange = (page: number) => setCurrentPage(page);
-console.log(links);
     return (
         <nav aria-label="Page navigation border-none">
             <ul className="flex items-center -space-x-px h-10 text-base">
@@ -29,6 +28,8 @@ className={`flex items-center ${Active ? "active" : ""} justify-center px-3 h-8 
 
             </ul>
         </nav>
+
+
 
 
     );

@@ -26,7 +26,6 @@ export default function Create() {
         { value: "M", label: "M" },
     ];
 
-    console.log(yachtTypes);
 
     useEffect(() => {
         if (errors && errors.success) {

@@ -68,10 +68,10 @@ export default function Featrures({ types }) {
                                 >
                                     {index + 1}
                                 </th>
-                                <td className="px-6 py-4">{item.name}</td>
+                                <td className="px-6 py-4">{item.displayname}</td>
                                 <img
-                                        src={item.image}
-                                        alt={item.name}
+                                        src={item.full_path}
+                                        alt={item.displayname}
                                         className="w-10 h-10 object-cover rounded-full"
                                     />
                                 <td className="px-6 py-4"><Tags type={item.status.toLowerCase()} /></td>
@@ -80,6 +80,8 @@ export default function Featrures({ types }) {
                                         editRoute={`/dashboard/types/edit/${item.id}`}
                                         deleteRoute={`/dashboard/types/delete/${item.id}`}
                                         blockRoute={`/dashboard/types/block/${item.id}`}
+                                        restoreRoute={`/dashboard/types/restored/${item.id}`}
+                                        item = {item}
                                     />
                                 </td>
                             </tr>

@@ -51,7 +51,7 @@ export default function Create({manufactuers}) {
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Controller
-                            name="name"
+                            name="model"
                             control={control}
                             rules={{
                                 required: true,

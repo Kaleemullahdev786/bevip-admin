@@ -22,7 +22,7 @@ class StoreManufacturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|unique:manufacturers,name',
+            'make'=>'required|unique:vehicle_make,make',
             'picture'=>'required|array',
             'picture.*'=>'file|mimes:png,jpg',
             'status'=>'required'

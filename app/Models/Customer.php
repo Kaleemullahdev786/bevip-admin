@@ -13,7 +13,7 @@ class Customer extends Authenticatable  implements JWTSubject
     use HasFactory, Notifiable,SoftDeletes;
     protected $guarded = ['id'];
     protected $guard = 'customers';
-
+    // protected $table = 'custoemrs';
     protected $hidden = ['password'];
     public function getJWTIdentifier()
     {

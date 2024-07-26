@@ -54,7 +54,7 @@ export default function Edit({ type }) {
                     <form onSubmit={handleSubmit(onSubmit)}>
                     <Controller
                             name="name"
-                            defaultValue={type.name}
+                            defaultValue={type.displayname}
                             control={control}
                             rules={{
                                 required: true,
@@ -66,7 +66,7 @@ export default function Edit({ type }) {
 
                     <Controller
                             name="type"
-                            defaultValue={type.type}
+                            defaultValue={type.vehicletype}
                             control={control}
                             rules={{
                                 required: true,
@@ -89,7 +89,7 @@ export default function Edit({ type }) {
                         />
                         <Controller
                             name="doors"
-                            defaultValue={type.doors}
+                            defaultValue={type.noofdoor}
                             control={control}
                             rules={{
                                 required: true,

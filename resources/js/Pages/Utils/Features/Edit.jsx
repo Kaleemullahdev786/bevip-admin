@@ -32,9 +32,9 @@ export default function Edit({ feature }) {
             toast.success(errors.success);
         }
 
-        else if (errors && errors.name) {
+        else if (errors && errors.feature) {
             //reset form //
-            toast.success(errors.name);
+            toast.success(errors.feature);
         }
         else if (errors && errors.status) {
             //reset form //
@@ -53,8 +53,8 @@ export default function Edit({ feature }) {
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
                     <Controller
-                            name="name"
-                            defaultValue={feature.name}
+                            name="feature_name"
+                            defaultValue={feature.feature}
                             control={control}
                             rules={{
                                 required: true,

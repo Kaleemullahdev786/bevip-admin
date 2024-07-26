@@ -19,7 +19,7 @@ class BrandModelController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $brand_models = BrandModel::with('manufacturer')->get();
+        $brand_models = BrandModel::withTrashed()->with('manufacturer')->get();
         // dd($brand_models);
         return Inertia::render('Utils/BrandModels/index', ['brand_models' => $brand_models]);
     }
@@ -33,7 +33,7 @@ class BrandModelController extends Controller
         if(!$hasPermission){
             abort(403);
         }
-        $manufactuers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
+        $manufactuers = Manufacturer::select('make as label', 'id as value')->get()->toArray();
         return Inertia::render('Utils/BrandModels/Create', ['manufactuers' => $manufactuers]);
     }
 
@@ -67,7 +67,7 @@ class BrandModelController extends Controller
     public function edit(BrandModel $brand_model)
     {
         $brand_model->load('manufacturer');
-        $manufactuers = Manufacturer::select('name as label', 'id as value')->get()->toArray();
+        $manufactuers = Manufacturer::select('make as label', 'id as value')->get()->toArray();
         return Inertia::render('Utils/BrandModels/Edit', ['brand_model' => $brand_model,'manufactuers'=>$manufactuers]);
     }
 
@@ -128,7 +128,7 @@ class BrandModelController extends Controller
     {
 
         $record = BrandModel::withTrashed()->find($id);
-        $record->restored();
+        $record->restore();
 
 
         return redirect()->route('brand_models')->withErrors(['success' => 'Model restored successfully']);

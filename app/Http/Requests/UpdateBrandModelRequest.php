@@ -24,15 +24,15 @@ class UpdateBrandModelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required',
-            'manufacturer_id'=>'required|numeric',
+            'model'=>'required',
+            'make_id'=>'required|numeric',
             'status'=>'required'
         ];
     }
     public function prepareForvalidation(){
 
             $this->merge(['status'=>$this->getValues('status')]);
-            $this->merge(['manufacturer_id'=>$this->getValues('manufacturer')]);
+            $this->merge(['make_id'=>$this->getValues('manufacturer')]);
 
     }
 }

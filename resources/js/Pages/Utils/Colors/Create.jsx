@@ -32,9 +32,9 @@ export default function Create() {
             reset();
             toast.success(errors.success);
         }
-        else if (errors && errors.name) {
+        else if (errors && errors.color) {
             //reset form //
-            toast.error(errors.name);
+            toast.error(errors.color);
         }
 
         else if (errors && errors.code) {
@@ -55,7 +55,7 @@ export default function Create() {
                 <div className="xl:w-3/6">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Controller
-                            name="name"
+                            name="color"
                             control={control}
                             rules={{
                                 required: true,

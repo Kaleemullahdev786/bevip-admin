@@ -24,7 +24,7 @@ class UpdateFeatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|unique:features,name,'.$this->feature->id,
+            'feature_name'=>'required|unique:vehicle_feature,feature,'.$this->feature->id,
             'icon'=>'nullable|array',
             'icon.*'=>'file|mimes:png,jpg',
             'status'=>'required'
