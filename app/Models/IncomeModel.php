@@ -2,7 +2,7 @@
 
 /*@Copyright Develope By Hassan sadiq-2022 | develope in bevip.ae*/
 
-namespace App\Model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,11 +18,11 @@ class IncomeModel extends Model
 
     public function category()
     {
-        return $this->hasOne("App\Model\IncCats", "id", "income_cat")->withTrashed();
+        return $this->hasOne("App\Models\IncCats", "id", "income_cat")->withTrashed();
     }
 
     public function vehicle()
     {
-        return $this->hasOne("App\Model\VehicleModel", "id", "vehicle_id")->withTrashed();
+        return $this->hasOne("App\Models\Vehicle", "id", "vehicle_id")->withTrashed();
     }
 }

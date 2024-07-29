@@ -2,7 +2,7 @@
 
 /*@Copyright Develope By Hassan sadiq-2022 | develope in bevip.ae*/
 
-namespace App\Model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +13,6 @@ class BookingPaymentsModel extends Model
 
     public function booking()
     {
-        return $this->hasOne("App\Model\Bookings", "id", "booking_id")->withTrashed();
+        return $this->hasOne("App\Models\Booking", "id", "booking_id")->withTrashed();
     }
 }

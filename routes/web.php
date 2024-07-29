@@ -154,8 +154,16 @@ Route::post('/dashboard/bookings/update/{booking}', [BookingController::class, '
 Route::get('/dashboard/bookings/delete/{booking}', [BookingController::class, 'delete'])->name('bookings.delete');
 Route::get('/dashboard/bookings/block/{booking}', [BookingController::class, 'block'])->name('bookings.block');
 Route::get('/dashboard/bookings/restored/{id}', [BookingController::class, 'restored'])->name('bookings.restored');
+
+
 Route::get('/dashboard/bookings/updatebooking/{booking}', [BookingController::class, 'updateBooking'])->name('bookings.status');
-Route::post('/dashboard/bookings/payment/complete', [BookingController::class, 'completePaymentBooking'])->name('bookings.paymentcomplete')->withTrashed();
+Route::post('/dashboard/bookings/complete/{booking}', [BookingController::class, 'completePaymentBooking'])->name('bookings.paymentcomplete')->withTrashed();
+Route::get('/dashboard/bookings/payment/complete-journey/{booking}', [BookingController::class, 'completeBookingJourney'])->name('bookings.completeBookingJourney')->withTrashed();
+Route::get('/dashboard/bookings/payment/make-payment/{booking}', [BookingController::class, 'completeBookingPayment'])->name('bookings.completeBookingPayment')->withTrashed();
+
+Route::post('/dashboard/bookings/cancelled/{booking}', [BookingController::class, 'cancelBooking'])->name('bookings.cancelBooking')->withTrashed();
+
+Route::get('/dashboard/bookings/extra/{booking}', [BookingController::class, 'extraParam'])->name('bookings.extraParam')->withTrashed();
 
 
 //utills controller//
