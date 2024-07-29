@@ -39,6 +39,9 @@ export default function RichTextEditor({ name, control, defaultValue }) {
                     setEditorData(data);
                 }}
                 disabled={isSubmitting}
+                // config={{
+                //     height: '600' // Set the desired height here
+                // }}
             />
             {invalid && (
                 <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>

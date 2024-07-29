@@ -44,6 +44,10 @@ export default function TextField({ name, control, rules }) {
                           field.name === "deposit fee"||
                           field.name === "extra charges"||
                           field.name === "luggage"||
+                          field.name === "payment"||
+                          field.name === "deposit"||
+                          field.name === "total amount"||
+
                           field.name === "discount"
 
                         ? "number"

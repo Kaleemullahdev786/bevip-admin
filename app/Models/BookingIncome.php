@@ -2,7 +2,7 @@
 
 /*@Copyright Develope By Hassan sadiq-2022 | develope in bevip.ae*/
 
-namespace App\Model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
